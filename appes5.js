@@ -29,6 +29,36 @@ UI.prototype.addBookToList = function(book)
   list.appendChild(row);
 }
 
+// Show alert prototype function
+UI.prototype.showAlert = function(message, className){ 
+  // create div
+  const div = document.createElement('div');
+  // Add classes
+  div.className = `alert ${className}`;
+  // Add text
+  div.appendChild(document.createTextNode(message));
+  // get parent
+  const container = document.querySelector('.container');
+  // get form 
+  const form = document.querySelector('#book-form');
+  // Insert alert. Following line says take the container and inside the container, add the alert just before the form
+  container.insertBefore(div, form);
+
+  // Timeout the alert after three seconds
+  setTimeout(function(){
+    document.querySelector('.alert').remove();
+  },3000);
+
+}
+
+// Delete book
+UI.prototype.deleteBook = function(target){
+  if(target.className === 'delete')
+  {
+    target.parentElement.parentElement.remove();
+  }
+}
+
 // Another prototype function to clear the fields.
 UI.prototype.clearFields = function()
 {
@@ -40,7 +70,7 @@ UI.prototype.clearFields = function()
 
 
 
-// Event listeners
+// Event listener for adding book
 document.getElementById('book-form').addEventListener('submit',function(e){
   // console.log('test');
   // get form values 
@@ -54,12 +84,38 @@ document.getElementById('book-form').addEventListener('submit',function(e){
   // instantiate UI
   const ui = new UI();
 
-
-  // add items to book list
+  // Validate
+  if(title === '' || author === '' || isbn === ''){
+    // Error alert
+    ui.showAlert('Please fill in all the fields', 'error');
+  }else{
+     // add items to book list
   ui.addBookToList(book);
+
+  // show alert for sucessfully added book
+  ui.showAlert('Book added sucessfully', 'sucess');
 
   // clear input fields
   ui.clearFields();
+}
+
+
+ 
+
+  e.preventDefault();
+});
+
+// event listener for delete
+document.getElementById('book-list').addEventListener('click', function(e){
+
+  // Instantiate Ui
+  const ui = new UI();
+
+  // Delete book: here below e.target means the thing in which we click
+  ui.deleteBook(e.target);
+
+  // Show alert for deleted book
+  ui.showAlert('Book removed', 'sucess');
 
   e.preventDefault();
 })
